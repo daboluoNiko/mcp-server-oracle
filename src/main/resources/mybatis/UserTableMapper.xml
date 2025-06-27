@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baishang.mcpserveroracle.business.mapper.UserTableMapper">
+    <select id="getTableDetail" resultType="com.baishang.mcpserveroracle.business.domain.TableDetailVo">
+        select TABLE_NAME tableName,
+               COMMENTS
+        from USER_TAB_COMMENTS
+        where TABLE_TYPE='TABLE'
+          AND TABLE_NAME NOT LIKE 'SYS\_%' ESCAPE '\'
+    </select>
+    <select id="getColumnDetail" resultType="com.baishang.mcpserveroracle.business.domain.ColumnDetailVo">
+        SELECT col.table_name tableName,
+               col.column_name columnName,
+               col.data_type dataType,
+               col.data_length dataLength,
+               col.data_precision dataPrecision,
+               col.data_scale dataScale,
+               col.nullable,
+               com.comments
+        FROM
+            all_tab_columns col
+                LEFT JOIN
+            all_col_comments com ON (col.table_name = com.table_name AND col.column_name = com.column_name)
+        WHERE
+            col.table_name =  #{tableName}
+    </select>
+    <select id="getOracleVersionInfo" resultType="java.lang.String">
+        SELECT * FROM v$version;
+    </select>
+</mapper> 
